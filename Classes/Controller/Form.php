@@ -5,6 +5,9 @@ namespace Typoheads\Formhandler\Controller;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use function array_keys;
+use function is_numeric;
+use function substr;
 
 /*                                                                        *
  * This script is part of the TYPO3 project - inspiring people to share!  *
@@ -1216,7 +1219,21 @@ class Form extends AbstractController
             $this->view->setTemplate($this->templateFile, ('FORM' . $step));
         } elseif ((int)$step === (int)($this->globals->getSession()->get('lastStep')) + 1) {
             $this->finished = true;
+        } elseif ($step > $this->numberOfSteps($this->settings)) {
+            $this->finished = true;
         }
+    }
+
+    private function numberOfSteps(array $settings): int
+    {
+        $count = 0;
+        foreach (array_keys($settings) as $key) {
+            if (substr($key, -1) === '.' && is_numeric(substr($key, 0, -1))) {
+                $count += 1;
+            }
+        }
+
+        return $count;
     }
 
     /**
