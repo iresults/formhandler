@@ -172,6 +172,9 @@ class Mail extends AbstractFinisher
         }
 
         $mailSettings = $this->settings[$type];
+        if (!$this->mailSettingsAreValid($mailSettings)) {
+            return;
+        }
         $plain = $this->parseTemplate($type, 'plain');
         if (strlen(trim($plain)) > 0) {
             $template['plain'] = $plain;
@@ -679,5 +682,26 @@ class Mail extends AbstractFinisher
         }
         $this->fillLangMarkersInSettings($emailSettings);
         return $emailSettings;
+    }
+
+    /**
+     * @param $mailSettings
+     * @return bool
+     */
+    protected function mailSettingsAreValid($mailSettings): bool
+    {
+        if (!isset($mailSettings['subject']) || empty($mailSettings['subject'])) {
+            return false;
+        }
+        if (!isset($mailSettings['to_email']) || empty($mailSettings['to_email'])) {
+            return false;
+        }
+        foreach ($mailSettings['to_email'] as $email) {
+            if (!$email) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
