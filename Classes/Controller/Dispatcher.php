@@ -129,6 +129,8 @@ class Dispatcher extends AbstractPlugin
                 $result .= '<div style="color:red; font-weight: bold">File: ' . $e->getFile() . '(' . $e->getLine() . ')</div>';
                 $result .= '<div style="color:red; font-weight: bold">' . $e->getTraceAsString() . '</div>';
             }
+
+            $result = '<pre>' . $result . '</pre>';
         }
         if ($this->globals->getSession() && $this->globals->getSession()->get('debug')) {
             $debuggers = $this->globals->getDebuggers();
